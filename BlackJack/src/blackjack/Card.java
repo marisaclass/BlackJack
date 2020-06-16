@@ -27,29 +27,6 @@ public class Card {
 	public String toString() {
 		 String info = getSuit();
 		 return String.format(getRank() + info.substring(0,1)); 
-	}
-//	public String showCard() {
-//		
-//		
-//		String info = null;
-//		
-//		if(rank == 11) {
-//			info = "Jack of " + suit;
-//		}
-//		else if(rank == 12) {
-//			info = "Queen of " + suit;
-//		}
-//		else if(rank == 13) {
-//			info = "King of " + suit;
-//		}
-//		else if (rank == 1) {
-//			info = "Ace of " + suit;
-//		}
-//		else {
-//			info = rank + " of " + suit;
-//		}
-//		
-//		return info;
-//	}
+	 }
 
 }
