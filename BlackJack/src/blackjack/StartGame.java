@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.swing.Action;
+import blackjack.Action;
 
 public class StartGame {
 	private static BigDecimal bankroll = BigDecimal.valueOf(0);
@@ -205,13 +205,14 @@ public class StartGame {
 				turn = scan.nextLine();
 					
 				if(turn.equalsIgnoreCase("U")) {
+					Suggestion sugg = null;
 					if(ace > 0) { //dealer has 17 soft hand
-							Suggestion sugg = new Suggestion(dealer, player, sum, true); //compare both cards
-							System.out.println(sugg.ToDo());
+							sugg = new Suggestion(dealer, player, sum, true); //compare both cards
+							
 					}else { //hard hand
-							Suggestion sugg = new Suggestion(dealer, player, sum, false);
-							System.out.println(sugg.ToDo());
-					}	
+							sugg = new Suggestion(dealer, player, sum, false);
+					}
+					System.out.println(sugg.ToDo());
 				}
 				
 				while(invalid) {
@@ -315,7 +316,6 @@ public class StartGame {
 						}
 						int what = playerTally(hand, player, original);
 						if(what == 1) { //blackjack
-							
 							invalid = false;
 							hitP = false;
 							status = 1;
@@ -455,15 +455,13 @@ public class StartGame {
 		return status;
 	}
 	
-	public void playerAction(Action action) { //force first action to STAND
-		/*Action SPLIT = null;
-		Action HIT = null;
-		Action Dh = null;
-		Action Ds = null;
-		Action Rh = null;
-		Action STAND = null;*/
-		
-		actionp = true;
+	public void playerAction(Action first) { //force first action to STAND
+		if(first == Action.STAND) {
+			actionp = true;
+		}
+		else {
+			actionp = false;
+		}
 	}
 	
 	public static void shuffle(Shoe shoe){
