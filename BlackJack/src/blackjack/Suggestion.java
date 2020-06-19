@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import blackjack.Action;
 
 public class Suggestion {
-	private static ArrayList <Card> dealer = new ArrayList<Card>();
-	private static ArrayList <Card> player = new ArrayList<Card>();
+	private ArrayList <Card> player = new ArrayList<Card>();
+	private int dealer = 0;
 	private boolean isSoft = false;
-	private static int playerSum = 0;
+	private int playerSum = 0;
 	
 	//For the suggestion Util, I'd recommend using Enum for your actions, like Action.HIT, Action.STAND, etc. 
 	//It should return an action based on the hand and the card the dealer is showing. 
 	//It'll help you get some experience with Enum's even though they aren't used often.
 	
-	public Suggestion(ArrayList <Card> dealer, ArrayList<Card> player, int playerSum, boolean isSoft){
-		this.dealer = dealer;
+	public Suggestion(int dealerCard, ArrayList<Card> player, int playerSum, boolean isSoft){
+		this.dealer = dealerCard;
 		this.player = player;
 		this.playerSum = playerSum;
 		this.isSoft = isSoft;
@@ -24,22 +24,21 @@ public class Suggestion {
 	public String ToDo(){
 		Action TODO = null;
 		if(player.get(0).getRank() == player.get(1).getRank()) {
-			TODO = Pair(); //
+			TODO = Pair(dealer, playerSum, player); //
 		}
 		
 		else if(isSoft == false) {
-			TODO = hardHand();
+			TODO = hardHand(dealer, playerSum, player);
 		}
 		
 		else if(isSoft == true) {
-			TODO = softHand();
+			TODO = softHand(dealer, playerSum, player);
 		}
 		
 		return TODO.toString();
 	}
 
-	public static Action hardHand() {
-		int card = dealer.get(0).getValue();
+	public static Action hardHand(int card, int playerSum, ArrayList<Card> player) {
 		Action sugg = null;
 		if(card == 2 || card == 3) {
 			if(playerSum >= 5 && playerSum < 9) {
@@ -153,8 +152,7 @@ public class Suggestion {
 		return sugg;
 	}
 	
-	public static Action softHand() {
-		int card = dealer.get(0).getValue();
+	public static Action softHand(int card, int playerSum, ArrayList<Card> player) {
 		Action sugg = null;
 		if(card == 9 || card == 10 || card == 11){
 			if(playerSum >= 13 && playerSum < 19 ) {
@@ -248,8 +246,7 @@ public class Suggestion {
 		return sugg;
 	}
 	
-	public static Action Pair() {
-		int card = dealer.get(0).getValue();
+	public static Action Pair(int card, int playerSum, ArrayList<Card> player) {
 		int play = player.get(0).getValue();
 		Action sugg = null;
 	
