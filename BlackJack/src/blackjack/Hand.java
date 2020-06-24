@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Hand {
 	private ArrayList <Card> player = new ArrayList<Card>();
+	private boolean isSoft = false;
 	//private int value = 0;
 	
 	public Hand(ArrayList<Card> player) {
@@ -30,7 +31,6 @@ public class Hand {
 		int count = 0;
 		int ace = 0;
 		int high = 0; //keeping track of values of 11 being used
-		boolean isSoft = false;
 		
 		for(int i = 0; i < player.size(); i++) {
 			if(player.get(i).getRank().equals("A")) {
@@ -57,8 +57,6 @@ public class Hand {
 					high--;
 				}
 			}
-			
-			isSoft = true; //only enters for loop when ace > 0 
 		}
 		
 		while(count > 21 && high > 0) { //checking at end 	
@@ -66,24 +64,22 @@ public class Hand {
 			count++; 
 			high--;
 		}
-		
-		if(isSoft && count <= 10) {
-			count = getSoft();
-		}
 
-		return count;
+		return count; //returns sum but doesnt notify if a soft hand or not
 	}
 	
 	public int getSoft() {
 		int sum = 0;
-		for(int i = 0; i < player.size(); i++) {
-			if(!player.get(i).getRank().equals("A")) {
+		if(hasAce() > 0 && (getSum() - 11) <= 10) {
+			for(int i = 0; i < player.size(); i++) {
+				if(!player.get(i).getRank().equals("A")) {
 					sum += player.get(i).getValue();
+				}
 			}
 		}
 		return sum;
 	}
-	
+
 	public int hasAce() {
 		int ace = 0;
 		for(int i = 0; i < player.size(); i++) {

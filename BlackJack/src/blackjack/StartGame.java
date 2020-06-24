@@ -191,20 +191,12 @@ public class StartGame {
 				}	
 				
 				hand.printCurrentHand(current);
-				
 				int sum = hand.getSum();
 				System.out.println("Type 'U' for Suggestion Utility.");
 				turn = scan.nextLine();
 					
 				if(turn.equalsIgnoreCase("U")) {
-					Suggestion sugg = null;
-					if(hand.getSoft() > 0) { //player has soft hand
-							sugg = new Suggestion(dealer.get(0).getValue(), current, sum, true); //compare both cards
-							
-					}else { //hard hand
-							sugg = new Suggestion(dealer.get(0).getValue(), current, sum, false);
-					}
-					System.out.println(sugg.ToDo());
+					System.out.println(Suggestion.getAdvice(dealer.get(0).getValue(), hand));
 				}
 				try {
 					while(invalid) {
@@ -252,7 +244,7 @@ public class StartGame {
 					}
 					
 					else if(turn.equalsIgnoreCase("D")) {
-						if(sum == 9 || sum == 10 || sum == 11 && current.size() == 2) {
+						if(current.size() == 2) {
 							doubleDown();
 							current.add(shoe.getCurrDeck().get(currcard));
 							currcard = shoe.removeFromDeck(currcard);

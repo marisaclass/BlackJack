@@ -35,7 +35,7 @@ public class Shoe {
 				}
 				
 				else if(String.valueOf(unit_cards[i]).equals("10")) {
-					cards = new Card("T", suit[1], 11); 
+					cards = new Card("T", suit[1], 10); 
 				}
 				
 				else {

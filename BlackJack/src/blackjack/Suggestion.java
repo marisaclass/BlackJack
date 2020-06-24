@@ -5,37 +5,32 @@ import java.util.ArrayList;
 import blackjack.Action;
 
 public class Suggestion {
-	private ArrayList <Card> player = new ArrayList<Card>();
-	private int dealer = 0;
-	private boolean isSoft = false;
-	private int playerSum = 0;
-	
 	//For the suggestion Util, I'd recommend using Enum for your actions, like Action.HIT, Action.STAND, etc. 
 	//It should return an action based on the hand and the card the dealer is showing. 
 	//It'll help you get some experience with Enum's even though they aren't used often.
 	
-	public Suggestion(int dealerCard, ArrayList<Card> player, int playerSum, boolean isSoft){
-		this.dealer = dealerCard;
-		this.player = player;
-		this.playerSum = playerSum;
-		this.isSoft = isSoft;
-	}
 
-	public String ToDo(){
-		Action TODO = null;
-		if(player.get(0).getRank() == player.get(1).getRank()) {
-			TODO = Pair(dealer, playerSum, player); //
+	public static Action getAdvice(int dealer, Hand hand){
+		Action advice = null;
+		ArrayList <Card> player = hand.getHand();
+		int playerSum = hand.getSum();
+		int soft = hand.getSoft();
+		
+		if((player.get(0).getRank() == player.get(1).getRank()) && player.size() == 2) {
+			advice = Pair(dealer, playerSum, player); //
 		}
 		
-		else if(isSoft == false) {
-			TODO = hardHand(dealer, playerSum, player);
-		}
+		else {
+			if(soft == 0) {
+				advice = hardHand(dealer, playerSum, player);
+			}
 		
-		else if(isSoft == true) {
-			TODO = softHand(dealer, playerSum, player);
+			else if(soft > 0) {
+				advice = softHand(dealer, playerSum, player);
+			}
 		}
-		
-		return TODO.toString();
+		//return advice.toString();
+		return advice;
 	}
 
 	public static Action hardHand(int card, int playerSum, ArrayList<Card> player) {
@@ -46,7 +41,7 @@ public class Suggestion {
 			}
 			
 			else if(playerSum >= 9 && playerSum < 12) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -67,7 +62,7 @@ public class Suggestion {
 				sugg = Action.HIT;
 			}
 			else if(playerSum >= 9 && playerSum < 12) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -85,7 +80,7 @@ public class Suggestion {
 			}
 			
 			else if(playerSum == 10 || playerSum == 11) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -107,7 +102,7 @@ public class Suggestion {
 			}
 			
 			else if(playerSum == 11) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -115,12 +110,12 @@ public class Suggestion {
 				}
 			}
 			
-			else if(playerSum >= 12 && playerSum < 15) {
+			else if(playerSum >= 12 && playerSum <= 16) {
 				sugg = Action.HIT;
 			}
-			else if(playerSum == 15 || playerSum == 16) {
+			/*else if(playerSum == 15 || playerSum == 16) {
 				sugg = Action.SURRENDER;
-			}
+			}*/
 			
 			else if(playerSum >= 17 && playerSum < 22) {
 				sugg = Action.STAND;
@@ -133,7 +128,7 @@ public class Suggestion {
 			}
 			
 			else if(playerSum == 11) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -154,32 +149,42 @@ public class Suggestion {
 	
 	public static Action softHand(int card, int playerSum, ArrayList<Card> player) {
 		Action sugg = null;
-		if(card == 9 || card == 10 || card == 11){
-			if(playerSum >= 13 && playerSum < 19 ) {
+		
+		if(card == 11) {
+			if(playerSum == 18 && player.size() > 2) {
+				sugg = Action.STAND;
+			}else if(playerSum >= 13 && playerSum < 19) {
+				sugg = Action.HIT;
+			}else if(playerSum >= 19 && playerSum < 22) {
+				sugg = Action.STAND;
+			}
+		}
+		else if(card == 9 || card == 10){
+			if(playerSum >= 13 && playerSum < 19) {
 				sugg = Action.HIT;
 			}else if(playerSum >= 19 && playerSum < 22) {
 				sugg = Action.STAND;
 			}
 		}
 		
-		if(card == 7 || card == 8){
-			if(playerSum >= 13 && playerSum < 18 ) {
+		else if(card == 7 || card == 8){
+			if(playerSum >= 13 && playerSum < 18) {
 				sugg = Action.HIT;
 			}else if(playerSum >= 18 && playerSum < 22) {
 				sugg = Action.STAND;
 			}
 		}
 		
-		if(card == 5 || card == 6){
+		else if(card == 5 || card == 6){
 			if(playerSum >= 13 && playerSum < 18 ) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
 					sugg = Action.HIT;
 				}
 			}else if(playerSum == 18) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -190,11 +195,11 @@ public class Suggestion {
 			}
 		}
 		
-		if(card == 4){
+		else if(card == 4){
 			if(playerSum >= 13 && playerSum < 15 ) {
 				sugg = Action.HIT;
 			}else if(playerSum >= 15 && playerSum < 18) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -202,7 +207,7 @@ public class Suggestion {
 				}
 			}
 			else if(playerSum == 18) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -213,11 +218,11 @@ public class Suggestion {
 			}
 		}
 		
-		if(card == 3){
+		else if(card == 3){
 			if(playerSum >= 13 && playerSum < 17 ) {
 				sugg = Action.HIT;
 			}else if(playerSum == 17) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -225,7 +230,7 @@ public class Suggestion {
 				}
 			}
 			else if(playerSum == 18) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -236,7 +241,7 @@ public class Suggestion {
 			}
 		}
 		
-		if(card == 2){
+		else if(card == 2){
 			if(playerSum >= 13 && playerSum < 18 ) {
 				sugg = Action.HIT;
 			}else if(playerSum >= 18) {
@@ -248,6 +253,7 @@ public class Suggestion {
 	
 	public static Action Pair(int card, int playerSum, ArrayList<Card> player) {
 		int play = player.get(0).getValue();
+		String rank = player.get(0).getRank();
 		Action sugg = null;
 	
 		if(card == 2 || card == 3 || card == 4){
@@ -258,7 +264,7 @@ public class Suggestion {
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -274,12 +280,12 @@ public class Suggestion {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;			
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}		
 		}
 				
-		if(card == 5 || card == 6){
+		else if(card == 5 || card == 6){
 			if(play == 2 ) {
 				sugg = Action.SPLIT;
 			}else if(play == 3) {
@@ -287,7 +293,7 @@ public class Suggestion {
 			}else if(play == 4) {
 				sugg = Action.SPLIT;		
 			}else if(play == 5) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -303,11 +309,11 @@ public class Suggestion {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}
 		}
-		if(card == 7){
+		else if(card == 7){
 			if(play == 2) {
 				sugg = Action.SPLIT;
 			}else if(play == 3) {
@@ -315,7 +321,7 @@ public class Suggestion {
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -331,11 +337,11 @@ public class Suggestion {
 				sugg = Action.STAND;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}		
 		}
-		if(card == 8){
+		else if(card == 8){
 			if(play == 2) {
 				sugg = Action.HIT;
 			}else if(play == 3) {
@@ -343,7 +349,7 @@ public class Suggestion {
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -359,12 +365,12 @@ public class Suggestion {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}		
 		}
 				
-		if(card == 9){
+		else if(card == 9){
 			if(play == 2) {
 				sugg = Action.HIT;
 			}else if(play == 3) {
@@ -372,7 +378,7 @@ public class Suggestion {
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
-				if(playerSum == 9 || playerSum == 10 || playerSum == 11 && player.size() == 2) {
+				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
 				}
 				else {
@@ -388,11 +394,11 @@ public class Suggestion {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}
 		}
-		if(card == 10 || card == 11){
+		else if(card == 10 || card == 11){
 			if(play == 2) {
 				sugg = Action.HIT;	
 			}else if(play == 3) {
@@ -411,7 +417,7 @@ public class Suggestion {
 				sugg = Action.STAND;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(play == 11) {
+			}else if(rank.equalsIgnoreCase("A")) {
 				sugg = Action.SPLIT;		
 			}
 		}
