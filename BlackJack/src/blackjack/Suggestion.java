@@ -10,14 +10,15 @@ public class Suggestion {
 	//It'll help you get some experience with Enum's even though they aren't used often.
 	
 
-	public static Action getAdvice(int dealer, Hand hand){
+	public static Action getAdvice(int dealer, Hand hand, AllHands all){
 		Action advice = null;
 		ArrayList <Card> player = hand.getHand();
 		int playerSum = hand.getSum();
 		int soft = hand.getSoft();
+		int max = all.maxSplit();
 		
-		if((player.get(0).getRank() == player.get(1).getRank()) && player.size() == 2) {
-			advice = Pair(dealer, playerSum, player); //
+		if((player.get(0).getValue() == player.get(1).getValue()) && player.size() == 2) {
+			advice = Pair(dealer, playerSum, player, max); //
 		}
 		
 		else {
@@ -251,16 +252,14 @@ public class Suggestion {
 		return sugg;
 	}
 	
-	public static Action Pair(int card, int playerSum, ArrayList<Card> player) {
+	public static Action Pair(int card, int playerSum, ArrayList<Card> player, int max) {
 		int play = player.get(0).getValue();
 		String rank = player.get(0).getRank();
 		Action sugg = null;
 	
 		if(card == 2 || card == 3 || card == 4){
-			if(play == 2) {
+			if((play == 2 || play == 3) && max < 5) {
 				sugg = Action.SPLIT;
-			}else if(play == 3) {
-				sugg = Action.SPLIT;		
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
@@ -270,28 +269,30 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}		
-			}else if(play == 6) {
-				sugg = Action.SPLIT;		
-			}else if(play == 7) {
-				sugg = Action.SPLIT;		
-			}else if(play == 8) {
-				sugg = Action.SPLIT;		
-			}else if(play == 9) {
-				sugg = Action.SPLIT;		
+			}else if(play == 6){
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
+			}else if(play == 8 || play == 9 || play == 7) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.STAND;
+				}
 			}else if(play == 10) {
 				sugg = Action.STAND;			
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
 		}
 				
 		else if(card == 5 || card == 6){
-			if(play == 2 ) {
+			if((play == 2 || play == 3 || play == 4) && max < 5 ) {
 				sugg = Action.SPLIT;
-			}else if(play == 3) {
-				sugg = Action.SPLIT;		
-			}else if(play == 4) {
-				sugg = Action.SPLIT;		
 			}else if(play == 5) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -299,25 +300,22 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}		
-			}else if(play == 6) {
-				sugg = Action.SPLIT;		
-			}else if(play == 7) {
-				sugg = Action.SPLIT;		
-			}else if(play == 8) {
-				sugg = Action.SPLIT;		
-			}else if(play == 9) {
-				sugg = Action.SPLIT;		
+			}else if(play == 8 || play == 9 || play == 7 || play == 6) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.STAND;
+				}
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}
 		}
 		else if(card == 7){
-			if(play == 2) {
+			if((play == 2 || play == 3) && max < 5) {
 				sugg = Action.SPLIT;
-			}else if(play == 3) {
-				sugg = Action.SPLIT;		
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
@@ -327,17 +325,18 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}		
-			}else if(play == 6) {
-				sugg = Action.SPLIT;		
-			}else if(play == 7) {
-				sugg = Action.SPLIT;		
-			}else if(play == 8) {
-				sugg = Action.SPLIT;		
+			}else if(play == 8 || play == 6 || play == 7) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
 			}else if(play == 9) {
 				sugg = Action.STAND;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
 		}
@@ -357,15 +356,11 @@ public class Suggestion {
 				}		
 			}else if(play == 6) {
 				sugg = Action.HIT;		
-			}else if(play == 7) {
-				sugg = Action.SPLIT;		
-			}else if(play == 8) {
-				sugg = Action.SPLIT;		
-			}else if(play == 9) {
+			}else if((play == 7 || play == 8 || play == 9) && max < 5) {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
 		}
@@ -388,13 +383,11 @@ public class Suggestion {
 				sugg = Action.HIT;		
 			}else if(play == 7) {
 				sugg = Action.HIT;	
-			}else if(play == 8) {
-				sugg = Action.SPLIT;		
-			}else if(play == 9) {
+			}else if((play == 8 || play == 9) && max < 5) {
 				sugg = Action.SPLIT;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}
 		}
@@ -411,13 +404,13 @@ public class Suggestion {
 				sugg = Action.HIT;			
 			}else if(play == 7) {
 				sugg = Action.HIT;		
-			}else if(play == 8) {
+			}else if(play == 8 && max < 5) {
 				sugg = Action.SPLIT;		
 			}else if(play == 9) {
 				sugg = Action.STAND;		
 			}else if(play == 10) {
 				sugg = Action.STAND;		
-			}else if(rank.equalsIgnoreCase("A")) {
+			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}
 		}

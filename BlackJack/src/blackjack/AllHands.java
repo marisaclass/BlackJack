@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public class AllHands {
 	
-ArrayList<Hand> playerHands = new ArrayList<Hand>(); //array of Json objects
+	ArrayList<Hand> playerHands = new ArrayList<Hand>(); //array of Json objects
+	int split = 0;
 	
 	public void addData(Hand data) {
 		playerHands.add(data);
@@ -20,5 +21,13 @@ ArrayList<Hand> playerHands = new ArrayList<Hand>(); //array of Json objects
 	
 	public ArrayList<Hand> getAllHands(){
 		return playerHands;
+	}
+	
+	public int maxSplit() {
+		return split;
+	}
+	
+	public void addSplit() {
+		split++;
 	}
 }

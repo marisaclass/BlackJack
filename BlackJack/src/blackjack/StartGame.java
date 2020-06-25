@@ -13,7 +13,7 @@ public class StartGame {
 	private static BigDecimal remaining = BigDecimal.valueOf(0);
 	private static BigDecimal bet = BigDecimal.valueOf(0);
 	private static int currcard = 0; //top most card in deck
-	private static int didSplit = 0;
+	//private static int didSplit = 0;
 	private static boolean actionp = false;
 	private Shoe shoe = null;
 
@@ -196,17 +196,18 @@ public class StartGame {
 				turn = scan.nextLine();
 					
 				if(turn.equalsIgnoreCase("U")) {
-					System.out.println(Suggestion.getAdvice(dealer.get(0).getValue(), hand));
+					System.out.println(Suggestion.getAdvice(dealer.get(0).getValue(), hand, all));
 				}
 				try {
 					while(invalid) {
 					System.out.println("Type 'P' to split. Type 'D' to double down. Type 'R' to surrender. Type 'S' to stand or 'H' to hit. ");
 					turn = scan.nextLine();
 					if(turn.equalsIgnoreCase("P")) { 
-						if(didSplit < 4 && current.size() == 2 && current.get(0).getValue() == current.get(1).getValue()) { //cant split when dealer is showing an Ace
+						if(all.maxSplit() < 5 && current.size() == 2 && current.get(0).getValue() == current.get(1).getValue()) { //cant split when dealer is showing an Ace
 							if(remaining.compareTo(original) >= 0) {
 								split(current, shoe, all, original);
-								didSplit++;
+								//didSplit++;
+								all.addSplit();
 								if(hand.hasAce() > 0) { //cant resplit once split an A,A
 									if(playerTally(all, hand, original) == 1) {
 										status = 1;
@@ -220,25 +221,29 @@ public class StartGame {
 									return status;
 								}
 								hand.printCurrentHand(current);
-								while(didSplit < 4 && hand.hasAce() == 0 && current.get(0).getValue() == current.get(1).getValue() && (remaining.compareTo(original) >= 0)) {
+								while(all.maxSplit() < 5 && hand.hasAce() == 0 && current.get(0).getValue() == current.get(1).getValue() && (remaining.compareTo(original) >= 0)) {
 									//show resplit hand hands
 									System.out.println("Type 'PS' to resplit.");
 									turn = scan.nextLine();
 									if(turn.equalsIgnoreCase("PS")) {
 										split(current, shoe, all, original);
-										didSplit++;
+										//didSplit++;
+										all.addSplit();
 										hand.printCurrentHand(current);
 									}
 									
 									else {
-										break;
+										System.out.println("Max 4 splits.");
+										invalid = false;
+										hitP = false;	
+										return status;
 									}
 								}
 							}
 						}
 					
 						else {
-							System.out.println("You cannot split right now.");
+							System.out.println("You cannot split.");
 							invalid = true;
 						}
 					}
@@ -491,7 +496,7 @@ public class StartGame {
 	}
 	
 	public void clearHands(Hand hand, AllHands all, ArrayList<Card> dealer) {
-		didSplit = 0; //reset
+		//didSplit = 0; //reset
 		actionp = false;
 		dealer.clear();
 		hand.clearData();

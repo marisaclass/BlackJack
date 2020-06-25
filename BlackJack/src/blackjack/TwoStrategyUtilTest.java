@@ -420,18 +420,20 @@ public class TwoStrategyUtilTest {
 		playerHand.add(cardAdapter(cards[i]));
 	    }
 	    Hand hand = new Hand(playerHand);
-
+	    AllHands all = new AllHands();
+	    all.addData(hand);
 	    Action actual = null;
+	    
 	    if (surrender) {
 		// actual = surrenderUtil.getAction(hand, showing, maxHands, -100);
 	    } else {
 		//actual = Suggestion.hardHand(showing, hand.getSum(), playerHand);
-	    	actual = Suggestion.getAdvice(showing, hand);
+	    	actual = Suggestion.getAdvice(showing, hand, all);
 		// actual = strategyUtil.getAction(hand, showing, maxHands, -100);
 	    }
 
-	    // assertEquals(hand.getValue() + "vs" + showing, expected, actual);
-	    assertEquals("Wrong: ", expected, actual);
+	    assertEquals(hand.getHand() + "vs" + showing, expected, actual);
+	    //assertEquals("Wrong: ", expected, actual);
 	}
 
     }

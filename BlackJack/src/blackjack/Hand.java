@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Hand {
 	private ArrayList <Card> player = new ArrayList<Card>();
 	private boolean isSoft = false;
+	private boolean split = false;
 	//private int value = 0;
 	
 	public Hand(ArrayList<Card> player) {
@@ -18,6 +19,18 @@ public class Hand {
 	
 	public void clearData() {
 		player.clear();
+	}
+	
+	public void setSplit() {
+		split = true;
+	}
+	
+	public boolean didSplit() {
+		if(split) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void printCurrentHand(ArrayList <Card> player) {
