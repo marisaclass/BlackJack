@@ -258,8 +258,13 @@ public class Suggestion {
 		Action sugg = null;
 	
 		if(card == 2 || card == 3 || card == 4){
-			if((play == 2 || play == 3) && max < 5) {
-				sugg = Action.SPLIT;
+			if(play == 2 || play == 3){
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
@@ -272,6 +277,10 @@ public class Suggestion {
 			}else if(play == 6){
 				if(max < 5) {
 					sugg = Action.SPLIT;		
+				}
+				
+				else if(card == 4) {
+					sugg = Action.STAND;
 				}
 				else {
 					sugg = Action.HIT;
@@ -291,8 +300,13 @@ public class Suggestion {
 		}
 				
 		else if(card == 5 || card == 6){
-			if((play == 2 || play == 3 || play == 4) && max < 5 ) {
-				sugg = Action.SPLIT;
+			if(play == 2 || play == 3 || play == 4) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
 			}else if(play == 5) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -314,8 +328,13 @@ public class Suggestion {
 			}
 		}
 		else if(card == 7){
-			if((play == 2 || play == 3) && max < 5) {
-				sugg = Action.SPLIT;
+			if(play == 2 || play == 3){
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
 			}else if(play == 4) {
 				sugg = Action.HIT;		
 			}else if(play == 5) {
@@ -355,9 +374,21 @@ public class Suggestion {
 					sugg = Action.HIT;
 				}		
 			}else if(play == 6) {
-				sugg = Action.HIT;		
-			}else if((play == 7 || play == 8 || play == 9) && max < 5) {
-				sugg = Action.SPLIT;		
+				sugg = Action.HIT;
+			}else if(play == 8 || play == 7) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
+			}else if(play == 9) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.STAND;
+				}	
 			}else if(play == 10) {
 				sugg = Action.STAND;		
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
@@ -379,12 +410,22 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}		
-			}else if(play == 6) {
-				sugg = Action.HIT;		
-			}else if(play == 7) {
-				sugg = Action.HIT;	
-			}else if((play == 8 || play == 9) && max < 5) {
-				sugg = Action.SPLIT;		
+			}else if(play == 6 || play == 7) {
+				sugg = Action.HIT;
+			}else if(play == 8){
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}
+			}else if(play == 9) {
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.STAND;
+				}	
 			}else if(play == 10) {
 				sugg = Action.STAND;		
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
@@ -404,8 +445,13 @@ public class Suggestion {
 				sugg = Action.HIT;			
 			}else if(play == 7) {
 				sugg = Action.HIT;		
-			}else if(play == 8 && max < 5) {
-				sugg = Action.SPLIT;		
+			}else if(play == 8){
+				if(max < 5) {
+					sugg = Action.SPLIT;		
+				}
+				else {
+					sugg = Action.HIT;
+				}		
 			}else if(play == 9) {
 				sugg = Action.STAND;		
 			}else if(play == 10) {

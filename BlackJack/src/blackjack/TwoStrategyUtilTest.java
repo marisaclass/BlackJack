@@ -414,7 +414,7 @@ public class TwoStrategyUtilTest {
 	    int... cards) {
 	for (int showing = showingStart; showing <= showingEnd; showing++) {
 	    ArrayList<Card> playerHand = new ArrayList<Card>();
-
+	    int split = 50;
 	    for (int i = 0; i < cards.length; i++) {
 		// hand.addCard(new Card(cards[i], 'c'));
 		playerHand.add(cardAdapter(cards[i]));
@@ -422,6 +422,13 @@ public class TwoStrategyUtilTest {
 	    Hand hand = new Hand(playerHand);
 	    AllHands all = new AllHands();
 	    all.addData(hand);
+	    if(maxHands) {
+		    while(split > 0) {
+		    	all.addSplit();
+		    	split--;
+		    }
+	    }
+	    
 	    Action actual = null;
 	    
 	    if (surrender) {

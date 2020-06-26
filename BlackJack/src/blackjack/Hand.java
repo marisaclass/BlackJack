@@ -21,18 +21,6 @@ public class Hand {
 		player.clear();
 	}
 	
-	public void setSplit() {
-		split = true;
-	}
-	
-	public boolean didSplit() {
-		if(split) {
-			return true;
-		}
-		
-		return false;
-	}
-	
 	public void printCurrentHand(ArrayList <Card> player) {
 		System.out.print("You're hand: ");
 		for(int i = 0; i < player.size(); i++) {
