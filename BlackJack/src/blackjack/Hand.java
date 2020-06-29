@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 public class Hand {
 	private ArrayList <Card> player = new ArrayList<Card>();
-	private boolean isSoft = false;
-	private boolean split = false;
 	//private int value = 0;
+	private boolean blackjack = false;
+	private boolean split = false;
+	private boolean bust = false;
+	private boolean double_down = false;
+	private boolean surrender = false;
+	private boolean insurance = false;
 	
 	public Hand(ArrayList<Card> player) {
 		this.player = player;
@@ -19,6 +23,12 @@ public class Hand {
 	
 	public void clearData() {
 		player.clear();
+		blackjack = false;
+		split = false;
+		bust = false;
+		double_down = false;
+		surrender = false;
+		insurance = false;
 	}
 	
 	public void printCurrentHand(ArrayList <Card> player) {
@@ -26,6 +36,73 @@ public class Hand {
 		for(int i = 0; i < player.size(); i++) {
 			System.out.print(player.get(i).toString() + ", ");
 		}
+	}
+	
+	public boolean isBust() {
+		if(bust) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isBlackjack() {
+		if(blackjack) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isDoubleDown() {
+		if(double_down) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isSurrender() {
+		if(surrender) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isInsurance() {
+		if(insurance) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isSplit() {
+		if(split) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public void setBust() {
+		bust = true;
+	}
+	
+	public void setBlackjack() {
+		blackjack = true;
+	}
+	
+	public void setDoubleDown() {
+		double_down = true;
+	}
+	
+	public void setSurrender() {
+		surrender = true;
+	}
+	
+	public void setInsurance() {
+		insurance = true;
+	}
+	
+	public void setSplit() {
+		split = true;
 	}
 	
 	public int getSum() {

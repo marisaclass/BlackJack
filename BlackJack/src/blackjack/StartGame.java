@@ -13,9 +13,13 @@ public class StartGame {
 	private static BigDecimal remaining = BigDecimal.valueOf(0);
 	private static BigDecimal bet = BigDecimal.valueOf(0);
 	private static int currcard = 0; //top most card in deck
-	//private static int didSplit = 0;
-	private static boolean actionp = false;
+	private static int actionp = 0;
 	private Shoe shoe = null;
+	ArrayList <Card> dealer = new ArrayList<Card>();
+	ArrayList<Card> player = new ArrayList<Card>();
+	Hand phand = null;
+	Hand dhand = null;
+	AllHands all = null;
 
 	public StartGame(){
 		
@@ -23,22 +27,19 @@ public class StartGame {
 	
 	public static void main(String[] args) {
 		StartGame game = new StartGame();
-		//Modify start game to import j units for test
 		game.run();
 		
 	}
 	
 	public void setShoe(int deck, int playable, int... cards) {
 		shoe = new Shoe(deck, playable, cards);
+		shoe.createDeck();
 	}
 	
 	public void run() {
 		//boolean start = false;
 		Scanner scan = new Scanner(System.in);
-		ArrayList <Card> dealer = new ArrayList<Card>();
-		ArrayList<Card> player = new ArrayList<Card>();
-		Hand hand = null;
-		AllHands all = null;
+		
 		/*while(start == false) {
 			try {
 				int shoe_deck = 1;
@@ -64,35 +65,35 @@ public class StartGame {
 		boolean dealing_game = true;
 		int statusP = 0;
 		int statusD = 0;
-		boolean hasAce = false;
 		boolean asked = false;
 		BigDecimal original = BigDecimal.valueOf(0);
 		BigDecimal insure_bet = BigDecimal.valueOf(0);;
 		
-		System.out.println("How much money do you want to put into your bankroll?");
+		/*System.out.println("How much money do you want to put into your bankroll?");
 		try {
 			bankroll = scan.nextBigDecimal();
 		}catch(NumberFormatException io) {
 			io.printStackTrace();
-		}
-		remaining = bankroll;
+		}*/
+		
 		//bet = getBet();
 		//bet = makeBet();
 		
 		if(bet.compareTo(BigDecimal.valueOf(-1.0)) == 0) {
-			//end of game 
 			//terminate
 			dealing_game = false;
 		}
 		else {
+			remaining = bankroll;
 			original = bet;
 			remaining = remaining.subtract(bet);
-			ArrayList<Card> deck = shoe.createDeck(); //must create new shoe object before line 90
-			hand = new Hand(player);
+			 //must create new shoe object before line 90
+			phand = new Hand(player);
+			dhand = new Hand(dealer);
 			all = new AllHands();
 			shuffle(shoe); //shuffling remaining cards in deck
-			deal(shoe, dealer, hand.getHand()); //dealing first 2 cards to dealing & 2 to player from shuffled deck
-			all.addData(hand);
+			deal(shoe, dhand.getHand(), phand.getHand()); //dealing first 2 cards to dealing & 2 to player from shuffled deck
+			all.addData(phand);
 		}
 		
 		while(dealing_game) {
@@ -101,9 +102,8 @@ public class StartGame {
 			}
 			if(asked == false) {
 				try {
-					if(dealer.get(0).getRank().equals("A")){ //dealer is currently showing an ace
-						hasAce = true;
-						hand.printCurrentHand(player);
+					if(dhand.hasAce() > 0){ //dealer is currently showing an ace
+						//phand.printCurrentHand(player);
 						System.out.println("Would you like Insurance? If so, how much? Type '0' for None.");
 						insure_bet = scan.nextBigDecimal(); 
 						
@@ -121,22 +121,22 @@ public class StartGame {
 			}
 			
 			
-			for(int i = 0; i < all.getAllHands().size(); i++) {
-				statusP = playerTurn(all.getAllHands().get(i), all, shoe, dealer, original);
+			for(int i = 0; i < all.getPlayerHands().size(); i++) {
+				statusP = playerTurn(all.getPlayerHands().get(i), dhand, all, shoe, original);
 			}
 			if(statusP != 1) { //only call dealer if a split hand surrendered but not if single hand surrendered
-				statusD = dealerTurn(dealer, hand, shoe, insure_bet, original);
+				statusD = dealerTurn(phand, dhand, shoe, insure_bet, original);
 			}
-			if((statusP == 1 &&  all.getAllHands().size() == 1) || (statusD == 1 && shoe.getCurrDeck().size() > 0)) { //still cards to continue playing game w same deck(s) 
+			if((statusP == 1 &&  all.getPlayerHands().size() == 1) || (statusD == 1 && shoe.getCurrDeck().size() > 0)) { //still cards to continue playing game w same deck(s) 
 				//and dealer or player busted or won 
 				//starting another game
-				dealing_game = redeal(shoe, hand,  all, dealer, original);
+				dealing_game = redeal(shoe, phand, dhand, all, original);
 			}
 			
 			if(shoe.getCurrDeck().size() == 0) {
 				//end of game/deck -> count cards
-				int winP = sum(player);
-				int winD = sum(dealer);
+				int winP = phand.getSum();
+				int winD = dhand.getSum();
 				
 				if(winP > winD) {
 					System.out.println("BlackJack! for Player");
@@ -156,203 +156,220 @@ public class StartGame {
 		}
 		
 		getBankroll(); //printing out money remaining in bankroll after deck officially ends
-		clearHands(hand, all, dealer);
+		clearHands(phand, dhand, all);
 	}
 	
-	public int playerTurn(Hand hand, AllHands all, Shoe shoe, ArrayList<Card> dealer, BigDecimal original) {
-		boolean hitP = true;
-		boolean invalid = true;
+	public int playerTurn(Hand phand, Hand dhand, AllHands all, Shoe shoe, BigDecimal original) {
 		Scanner scan = new Scanner(System.in);
 		int status = 0;
-		String turn = null;
+		//String turn = null;
+		ArrayList<Card> current = phand.getHand();
+		ArrayList<Card> dealer = dhand.getHand();
+		Action force = null;
 		
-		ArrayList<Card> current = hand.getHand();
-		
-		while(hitP) {
-				invalid = true;
-				if(actionp == true) { //forcing first action to STAND
-					if(playerTally(all, hand, original) == 1) {
-						status = 1;
-					}
-					
-					else {
-						status = 0;
-					}
-					actionp = false;
-					invalid = false;
-					hitP = false;
-					return status;
+		//while(hitP) {
+			if(actionp != 0) {
+				if(actionp == 1) { //forcing first action
+					force = Action.STAND;
+				}else if(actionp == 2) {
+					force = Action.HIT;
+				}else if(actionp == 3) {
+					force = Action.DOUBLE;
+				}else if(actionp == 4) {
+					force = Action.SURRENDER;
+				}else if(actionp == 5) {
+					force = Action.SPLIT;
 				}
+				actionp = 0;
+			}	
+			else {
+				force = Suggestion.getAdvice(dealer.get(0).getValue(), phand, all);
+			}
 				
 				
-				if(current.size() == 1) { //the next splitted hand
-					current.add(shoe.getCurrDeck().get(currcard));
-					currcard = shoe.removeFromDeck(currcard);
-				}	
+			if(current.size() == 1) { //the next splitted hand
+				current.add(shoe.getCurrDeck().get(currcard));
+				currcard = shoe.removeFromDeck(currcard);
+			}	
 				
-				hand.printCurrentHand(current);
-				int sum = hand.getSum();
-				System.out.println("Type 'U' for Suggestion Utility.");
-				turn = scan.nextLine();
+				//hand.printCurrentHand(current);
+			int sum = phand.getSum();
+				//System.out.println("Type 'U' for Suggestion Utility.");
+				//turn = scan.nextLine();
 					
-				if(turn.equalsIgnoreCase("U")) {
-					System.out.println(Suggestion.getAdvice(dealer.get(0).getValue(), hand, all));
-				}
-				try {
-					while(invalid) {
-					System.out.println("Type 'P' to split. Type 'D' to double down. Type 'R' to surrender. Type 'S' to stand or 'H' to hit. ");
-					turn = scan.nextLine();
-					if(turn.equalsIgnoreCase("P")) { 
-						if(all.maxSplit() < 5 && current.size() == 2 && current.get(0).getValue() == current.get(1).getValue()) { //cant split when dealer is showing an Ace
-							if(remaining.compareTo(original) >= 0) {
+				//if(turn.equalsIgnoreCase("U")) {
+					//System.out.println(Suggestion.getAdvice(dealer.get(0).getValue(), hand, all));
+				//}
+			try {
+					//while(invalid) {
+					//System.out.println("Type 'P' to split. Type 'D' to double down. Type 'R' to surrender. Type 'S' to stand or 'H' to hit. ");
+					//turn = scan.nextLine();
+					if(force == Action.SPLIT) { 
+						//if(all.maxSplit() < 5 && current.size() == 2 && current.get(0).getValue() == current.get(1).getValue()) { //cant split when dealer is showing an Ace
+						if(all.maxSplit() < 5 && remaining.compareTo(original) >= 0) {	
 								split(current, shoe, all, original);
-								//didSplit++;
+								phand.setSplit();
 								all.addSplit();
-								if(hand.hasAce() > 0) { //cant resplit once split an A,A
-									if(playerTally(all, hand, original) == 1) {
+								if(phand.hasAce() > 0) { //cant resplit once split an A,A
+									if(playerTally(all, phand, original) == 1) {
 										status = 1;
 									}
 									
 									else {
 										status = 0;
 									}
-									invalid = false;
-									hitP = false;	
+									//invalid = false;
+									//hitP = false;	
 									return status;
 								}
-								hand.printCurrentHand(current);
-								while(all.maxSplit() < 5 && hand.hasAce() == 0 && current.get(0).getValue() == current.get(1).getValue() && (remaining.compareTo(original) >= 0)) {
+								//hand.printCurrentHand(current);
+								while(all.maxSplit() < 5 && (Suggestion.getAdvice(dealer.get(0).getValue(), phand, all) == Action.SPLIT) && (remaining.compareTo(original) >= 0)) {
 									//show resplit hand hands
-									System.out.println("Type 'PS' to resplit.");
-									turn = scan.nextLine();
-									if(turn.equalsIgnoreCase("PS")) {
+									//System.out.println("Type 'PS' to resplit.");
+									//turn = scan.nextLine();
+									//if(turn.equalsIgnoreCase("PS")) {
 										split(current, shoe, all, original);
-										//didSplit++;
+										phand.setSplit();
 										all.addSplit();
-										hand.printCurrentHand(current);
-									}
-									
-									else {
-										System.out.println("Max 4 splits.");
-										invalid = false;
-										hitP = false;	
-										return status;
-									}
+										//hand.printCurrentHand(current);
+									//}
 								}
-							}
+								if(playerTally(all, phand, original) == 1) {
+									status = 1;
+								}
+								
+								else {
+									status = 0;
+								}
+								return status;
 						}
 					
-						else {
+						/*else {
 							System.out.println("You cannot split.");
 							invalid = true;
-						}
+						}*/
 					}
 					
-					else if(turn.equalsIgnoreCase("D")) {
+					//else if(turn.equalsIgnoreCase("D")) {
+					else if(force == Action.DOUBLE) {
 						if(current.size() == 2) {
 							doubleDown();
 							current.add(shoe.getCurrDeck().get(currcard));
 							currcard = shoe.removeFromDeck(currcard);
 							
-							hand.printCurrentHand(current);
-							if(playerTally(all, hand, original) == 1) {
+							phand.setDoubleDown();
+							//phand.printCurrentHand(current);
+							if(playerTally(all, phand, original) == 1) {
 								status = 1;
 							}
-							invalid = false;
-							hitP = false;
 							return status;
 						}
 						
-						else {
+						/*else {
 							System.out.println("You cannot double down right now.");
-							invalid = true;
-						}
+						}*/
 					}
 					
-					else if(turn.equalsIgnoreCase("R")) {
+					//else if(turn.equalsIgnoreCase("R")) {
+					else if(force == Action.SURRENDER) {
 						surrender(all, original);
-						all.getAllHands().remove(hand); 
-						System.out.println("You Surrendered.");
+						all.getPlayerHands().remove(phand); 
+						//System.out.println("You Surrendered.");
+						phand.setSurrender();
 						
-						if(all.getAllHands().size() <= 1) {
+						if(all.getPlayerHands().size() <= 1) {
 							status = 1; //so dont call dealer's hand -> round officially over
 						}
 						else {
 							status = 0; 
 						}
-						invalid = false; //exit turn
-						hitP = false;
 						return status;
 					}
 					
-					else if(turn.equalsIgnoreCase("H")){
-						current.add(shoe.getCurrDeck().get(currcard));
-						currcard = shoe.removeFromDeck(currcard);
-						
-						hand.printCurrentHand(current);
-						int what = playerTally(all, hand, original);
-						if(what == 1) { //blackjack
-							invalid = false;
-							hitP = false;
-							status = 1;
-						}
-						else {
-							//ask to hit or stay again if didnt get blackjack
-							if(what == 3) { //lost a split hand
-								invalid = false;
+					//else if(turn.equalsIgnoreCase("H")){
+					else if(force == Action.HIT) {
+						boolean hitP = true;
+						while(hitP) {
+							current.add(shoe.getCurrDeck().get(currcard));
+							currcard = shoe.removeFromDeck(currcard);
+							
+							//phand.printCurrentHand(current);
+							int what = playerTally(all, phand, original);
+							if(what == 1) { //blackjack
+								hitP = false;
+								status = 1;
+								return status;
+							}
+							
+								//ask to hit or stay again if didnt get blackjack
+							else if(what == 3) { //lost a split hand so done that round
 								hitP = false;
 								return status;
 							}
-							invalid = false;
-							hitP = true;
+							
+							else {
+								if(force == Action.STAND || force != Action.HIT) {
+									if(playerTally(all, phand, original) == 1) {
+										status = 1;
+									}
+									
+									else {
+										status = 0;
+									}
+									hitP = false;
+									return status;
+								}
+								else if(force == Action.HIT) {
+									hitP = true;
+								}
+							}
 						}
 					}
 				
-					else if(turn.equalsIgnoreCase("S")) {
+					//else if(turn.equalsIgnoreCase("S")) {
+					else if(Suggestion.getAdvice(dealer.get(0).getValue(), phand, all) == Action.STAND) {
 						//if stayed - now ask dealer to hit or stay
-						if(playerTally(all, hand, original) == 1) {
+						if(playerTally(all, phand, original) == 1) {
 							status = 1;
 						}
 						
 						else {
 							status = 0;
 						}
-						invalid = false;
-						hitP = false;
 					}
 					else {
 						throw new NoSuchElementException();
 					}
-				}
 			}catch(NoSuchElementException io) {
 					System.out.println("You must make a valid move.");
-					invalid = true;
-				}
 			}
 		
 		return status;
 	}
 	
-	public int dealerTurn(ArrayList<Card> dealer, Hand hand, Shoe shoe, BigDecimal insure_bet, BigDecimal original) {
+	public int dealerTurn(Hand phand, Hand dhand, Shoe shoe, BigDecimal insure_bet, BigDecimal original) {
 		int status = 0;
+		ArrayList<Card> dealer= dhand.getHand();
 		//cant split with insurance
-		if(dealer.get(0).getRank().equals("A")){ //dealer is currently showing an ace
-			dealer.get(1).toString(); //showing hole card now
+		if(dhand.hasAce() == 1){ //dealer is currently showing an ace
+			//dealer.get(1).toString(); //showing hole card now
 			if(dealer.get(1).getValue() == 10) {
-				System.out.println("BlackJack! for Dealer");
+				//System.out.println("BlackJack! for Dealer");
+				dhand.setBlackjack();
 				if(insure_bet.compareTo(BigDecimal.valueOf(0)) == 1) {
 					BigDecimal won = insure_bet.multiply(BigDecimal.valueOf(2.0));
 					remaining = remaining.add(won).add(insure_bet);
 					//remaining += (insure_bet*2 + insure_bet); //add to remaining -> won money back but original bet is still taken away (as already done)
 				}
-				if(hand.getSum() == 21) {
-					System.out.println("BlackJack! for Player also... It's a tie!");
+				if(phand.getSum() == 21) {
+					phand.setBlackjack();
 					remaining = remaining.add(bet); //gets paid original bet back -> even money
 					//remaining -= insure_bet;
 				}
 
-				else if(hand.getSum() > 21) {
-						System.out.println("And Player busts.");
+				else if(phand.getSum() > 21) {
+					//System.out.println("And Player busts.");
+					phand.setBust();
 						//doesnt get original bet back
 						//if doesnt bust - still keeps insurance bet and loses original bet because lost either way
 				}
@@ -366,8 +383,9 @@ public class StartGame {
 				if(insure_bet.compareTo(BigDecimal.valueOf(0)) == 1) {
 					remaining = remaining.subtract(insure_bet);
 				}
-				if(hand.getSum() == 21) {
-					System.out.println("BlackJack! for Player.");
+				if(phand.getSum() == 21) {
+					//System.out.println("BlackJack! for Player.");
+					phand.setBlackjack();
 					BigDecimal paid = bet.multiply(BigDecimal.valueOf(1.5));
 					remaining = remaining.add(bet).add(paid); //gets paid original bet + 3/2*bet (or 1.5x) but still loses insurance bet
 					status = 1;
@@ -377,13 +395,15 @@ public class StartGame {
 		}
 		
 		else if(dealer.get(0).getValue() == 10) {  //no insurance asked for here
-			if(dealer.get(1).getRank().equals("A")) {
+			if(dhand.hasAce() > 0) {
 				dealer.get(1).toString(); //showing hole card now
-				System.out.println("BlackJack! for Dealer");
+				//System.out.println("BlackJack! for Dealer");
+				dhand.setBlackjack();
 				
 				//check if player has blackjack also
-				if(hand.getSum() == 21) {
-					System.out.println("BlackJack! for Player also... It's a tie!");
+				if(phand.getSum() == 21) {
+					//System.out.println("BlackJack! for Player also... It's a tie!");
+					phand.setBlackjack();
 					remaining = remaining.add(bet); //just gets original bet back
 				}
 				
@@ -392,33 +412,32 @@ public class StartGame {
 			}
 		}
 		
-		int j = 0;
-		System.out.println("D's hand:");
-		for(int i = 0; i < dealer.size(); i++) {
-			System.out.println(dealer.get(i).toString());
-			j = i;
-		}
+		//int j = 0;
+		//dhand.printCurrentHand(dealer);
 		status = 1;
-		j++; 
+		//j++; 
 		
-		while(sum(dealer) < 17) {
+		while(dhand.getSum() < 17 && (currcard < shoe.getCurrDeck().size() - 1)) {
 			dealer.add(shoe.getCurrDeck().get(currcard));
 			currcard = shoe.removeFromDeck(currcard);
 			
-			System.out.println(dealer.get(j).toString());
-			j++;
+			//System.out.println(dealer.get(j).toString());
+			//j++;
 			
-			int sum = sum(dealer);
+			int sum = dhand.getSum();
 			if(sum > 21) {
-				System.out.println("Dealer Busted... You won!");
+				//System.out.println("Dealer Busted... You won!");
+				dhand.setBust();
 				BigDecimal back = bet.multiply(BigDecimal.valueOf(2.0));
 				remaining = remaining.add(back); //gets back its current bet
 				status = 1;
 			}
 			else if(sum == 21) {
-				System.out.println("BlackJack! for Dealer"); //already took out bet from remaining
-				if(hand.getSum() == 21) {
-					System.out.println("BlackJack! for Player also... It's a tie!");
+				//System.out.println("BlackJack! for Dealer"); //already took out bet from remaining
+				dhand.setBlackjack();
+				if(phand.getSum() == 21) {
+					//System.out.println("BlackJack! for Player also... It's a tie!");
+					phand.setBlackjack();
 					remaining = remaining.add(bet);
 				}	
 				status = 1;
@@ -433,10 +452,15 @@ public class StartGame {
 	
 	public void playerAction(Action first) { //force first action to STAND
 		if(first == Action.STAND) {
-			actionp = true;
-		}
-		else {
-			actionp = false;
+			actionp = 1;
+		}else if(first == Action.HIT) {
+			actionp = 2;
+		}else if(first == Action.DOUBLE) {
+			actionp = 3;
+		}else if(first == Action.SURRENDER) {
+			actionp = 4;
+		}else if(first == Action.SPLIT) {
+			actionp = 5;
 		}
 	}
 	
@@ -454,32 +478,27 @@ public class StartGame {
 	    } 
 	}
 	
-	public static void deal(Shoe shoe, ArrayList<Card> dealer, ArrayList<Card> player) {
+	public static void deal(Shoe shoe, ArrayList<Card> player, ArrayList<Card> dealer) {
 		//deals player first, then dealer, then player, then dealer
-		player.add(shoe.getCurrDeck().get(currcard));
-		currcard = shoe.removeFromDeck(currcard);
-		
-		dealer.add(shoe.getCurrDeck().get(currcard));
-		currcard = shoe.removeFromDeck(currcard);
-		
-		player.add(shoe.getCurrDeck().get(currcard));
-		currcard = shoe.removeFromDeck(currcard);
+		while((currcard < shoe.getCurrDeck().size() - 1) && player.size() < 3 && dealer.size() < 3) {
+			player.add(shoe.getCurrDeck().get(currcard));
+			currcard = shoe.removeFromDeck(currcard);
 			
-		dealer.add(shoe.getCurrDeck().get(currcard));
-		currcard = shoe.removeFromDeck(currcard);
+			dealer.add(shoe.getCurrDeck().get(currcard));
+			currcard = shoe.removeFromDeck(currcard);
+		}
 		
-		System.out.println("D's card: " + dealer.get(0).toString());
+		//System.out.println("D's card: " + dealer.get(0).toString());
 	}
 	
-	public boolean redeal(Shoe shoe, Hand hand, AllHands all, ArrayList<Card> dealer, BigDecimal original) {
+	public boolean redeal(Shoe shoe, Hand phand, Hand dhand, AllHands all, BigDecimal original) {
 		//clear
-		clearHands(hand, all, dealer);
-		System.out.println(getBankroll()); 
+		clearHands(phand, dhand, all);
+		//System.out.println(getBankroll()); 
 		
 		//bet = getBet();
 		//bet = makeBet();
-		if(bet.compareTo(BigDecimal.valueOf(-1.0)) == 0) {
-			//end of game 
+		if(bet.compareTo(BigDecimal.valueOf(-1.0)) == 0) { 
 			//terminate
 			return false;
 		}
@@ -487,61 +506,29 @@ public class StartGame {
 		remaining = remaining.subtract(bet);
 		
 		ArrayList<Card> player = new ArrayList<Card>();
-		hand = new Hand(player);
+		ArrayList<Card> dealer = new ArrayList<Card>();
+		phand = new Hand(player);
+		dhand = new Hand(dealer);
 		shuffle(shoe); //shuffling remaining cards in deck
-		deal(shoe, dealer, hand.getHand()); //dealing first 2 cards to dealing & 2 to player from shuffled deck
-		all.addData(hand);
+		deal(shoe, phand.getHand(), dhand.getHand()); //dealing first 2 cards to dealing & 2 to player from shuffled deck
+		all.addData(phand);
 		
 		return true;
 	}
 	
-	public void clearHands(Hand hand, AllHands all, ArrayList<Card> dealer) {
-		//didSplit = 0; //reset
-		actionp = false;
-		dealer.clear();
-		hand.clearData();
+	public void clearHands(Hand phand, Hand dhand, AllHands all) {
+		actionp = 0;
+		dhand.clearData();
+		phand.clearData();
 		all.clearData();
 	}
 	
-	public int sum(ArrayList <Card> hand) {
-		int count = 0;
-		int ace = 0;
-		int high = 0; //keeping track of values of 11 being used
-		
-		for(int i = 0; i < hand.size(); i++) {
-			if(hand.get(i).getRank().equals("A")) {
-				ace++;
-			}
-			else {
-				count += hand.get(i).getValue(); 
-			}
-			//need to do Ace (1 or 11) edge case -> by default, ace is 11
-		}
-		
-		for(int i = 0; i < ace; i++) { 
-			if(count >= 21) {
-				count++;
-			}
-			
-			else {
-				count += 11;
-				high++;
-			
-				if(count > 21) {
-					count -= 11; //dont want to add 11 if originally count is already at 21 or above so just add 1
-					count++;
-					high--;
-				}
-			}
-		}
-		
-		while(count > 21 && high > 0) { //checking at end 	
-			count -= 11;
-			count++; 
-			high--;
-		}
-
-		return count;
+	public Hand getDealerHand(){  //pass in dealer hand
+		return dhand;
+	}
+	
+	public ArrayList<Hand> getPlayerHands(){  //pass in dealer hand
+		return all.getPlayerHands();
 	}
 	
 	public void makeBet(BigDecimal newBet) {
@@ -582,7 +569,7 @@ public class StartGame {
 	}
 	
 	public void surrender(AllHands all, BigDecimal original) {
-		if(all.getAllHands().size() > 1) {
+		if(all.getPlayerHands().size() > 1) {
 			BigDecimal half = original.divide(BigDecimal.valueOf(2.0));
 			bet = bet.subtract(half); //loses half of split bet & doesnt get it back in remaining
 		}
@@ -613,8 +600,12 @@ public class StartGame {
 		all.addData(new_hand);
 
 	}
+	
+	public void setBankroll(BigDecimal bank) {
+		bankroll = bank;
+	}
 
-	public static String getBankroll() {
+	public String getBankroll() {
 		String results = "total bankroll of $" + remaining;
 		/*if(remaining.compareTo(BigDecimal.valueOf(0)) == -1) {
 			results = "You owe " + remaining + " dollars.";
@@ -626,40 +617,44 @@ public class StartGame {
 		return results;
 	}
 	
-	public int playerTally(AllHands all, Hand hand, BigDecimal original) {
+	public int playerTally(AllHands all, Hand phand, BigDecimal original) {
 		int status = 0;
-		if(hand.getSum() > 21) {
-			if(all.getAllHands().size() > 1) {
-				System.out.println("Busted... You lost this current hand.");
+		if(phand.getSum() > 21) {
+			if(all.getPlayerHands().size() > 1) {
+				//System.out.println("Busted... You lost this current hand.");
+				//phand.isBust();
 				bet = bet.subtract(original);
 				//doesnt get original back in remaining
 				status = 3;
 			}
 			
-			else if(all.getAllHands().size() == 1) {
-				System.out.println("Busted... You lost.");
+			else if(all.getPlayerHands().size() == 1) {
+				//System.out.println("Busted... You lost.");
+				phand.setBust();
 				status = 1;
 			}
-			all.getAllHands().remove(hand);
+			all.getPlayerHands().remove(phand);
 			
 		}
-		else if(hand.getSum() == 21) {
-			if(all.getAllHands().size() > 1) {
-				System.out.println("BlackJack! for this hand");
+		else if(phand.getSum() == 21) {
+			if(all.getPlayerHands().size() > 1) {
+				//System.out.println("BlackJack! for this hand");
+				//phand.isBlackjack();
 				bet = bet.subtract(original);
 				remaining = remaining.add(original);
 				status = 3;
 			}
 			
-			else if(all.getAllHands().size() == 1) {
-				System.out.println("BlackJack! for you.");
+			else if(all.getPlayerHands().size() == 1) {
+				//System.out.println("BlackJack! for you.");
+				phand.setBlackjack();
 				BigDecimal back = bet.multiply(BigDecimal.valueOf(1.5));
 				
 				remaining = remaining.add(bet).add(back); //payout for blackjack
 				status = 1;
 			}
 			
-			all.getAllHands().remove(hand);
+			all.getPlayerHands().remove(phand);
 		}
 		
 		return status;

@@ -23,7 +23,7 @@ public class Shoe {
 		this.unit_cards = cards;
 	}
 	
-	public ArrayList<Card> createDeck() {
+	public void createDeck() {
 		if(unit_cards != null) { 
 			for(int i = 0; i < unit_cards.length; i++) {
 				if(String.valueOf(unit_cards[i]).equals("J") || String.valueOf(unit_cards[i]).equals("Q") || 
@@ -63,8 +63,6 @@ public class Shoe {
 				}
 			}
 		}
-		
-		return deck;
 	}
 	
 	public int removeFromDeck(int currcard) {

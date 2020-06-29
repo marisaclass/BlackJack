@@ -17,9 +17,10 @@ public class AllHands {
 	
 	public void clearData() {
 		playerHands.clear();
+		split = 0;
 	}
 	
-	public ArrayList<Hand> getAllHands(){
+	public ArrayList<Hand> getPlayerHands(){
 		return playerHands;
 	}
 	
