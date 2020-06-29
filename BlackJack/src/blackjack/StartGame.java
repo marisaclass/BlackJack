@@ -156,7 +156,7 @@ public class StartGame {
 		}
 		
 		getBankroll(); //printing out money remaining in bankroll after deck officially ends
-		clearHands(phand, dhand, all);
+		//clearHands(phand, dhand, all);
 	}
 	
 	public int playerTurn(Hand phand, Hand dhand, AllHands all, Shoe shoe, BigDecimal original) {
@@ -480,20 +480,32 @@ public class StartGame {
 	
 	public static void deal(Shoe shoe, ArrayList<Card> player, ArrayList<Card> dealer) {
 		//deals player first, then dealer, then player, then dealer
-		while((currcard < shoe.getCurrDeck().size() - 1) && player.size() < 3 && dealer.size() < 3) {
+		/*while((currcard < shoe.getCurrDeck().size() - 1) && player.size() < 3 && dealer.size() < 3) {
 			player.add(shoe.getCurrDeck().get(currcard));
 			currcard = shoe.removeFromDeck(currcard);
 			
 			dealer.add(shoe.getCurrDeck().get(currcard));
 			currcard = shoe.removeFromDeck(currcard);
-		}
+		}*/
+		
+		player.add(shoe.getCurrDeck().get(currcard));
+		currcard = shoe.removeFromDeck(currcard);
+		
+		dealer.add(shoe.getCurrDeck().get(currcard));
+		currcard = shoe.removeFromDeck(currcard);
+		
+		player.add(shoe.getCurrDeck().get(currcard));
+		currcard = shoe.removeFromDeck(currcard);
+		
+		dealer.add(shoe.getCurrDeck().get(currcard));
+		currcard = shoe.removeFromDeck(currcard);
 		
 		//System.out.println("D's card: " + dealer.get(0).toString());
 	}
 	
 	public boolean redeal(Shoe shoe, Hand phand, Hand dhand, AllHands all, BigDecimal original) {
 		//clear
-		clearHands(phand, dhand, all);
+		//clearHands(phand, dhand, all);
 		//System.out.println(getBankroll()); 
 		
 		//bet = getBet();
@@ -516,7 +528,7 @@ public class StartGame {
 		return true;
 	}
 	
-	public void clearHands(Hand phand, Hand dhand, AllHands all) {
+	public void clearHands() {
 		actionp = 0;
 		dhand.clearData();
 		phand.clearData();

@@ -31,16 +31,20 @@ public class BlackjackTest {
 	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 3, false, true, false, false, false, false);
+	os.clearHands();
 	assertEquals("Wrong Payout", BigDecimal.TEN, os.getBankroll());
+	
 
 	// Forced Stand Dealer Win by higher card
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 3, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.STAND);
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
+	//os.clearHands();
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
 
 	// Forced Stand Push
