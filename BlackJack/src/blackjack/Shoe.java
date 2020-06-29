@@ -43,6 +43,11 @@ public class Shoe {
 				}
 				deck.add(cards);
 			}
+			
+			for(int i = 0; i < shoe; i++) {
+				cards = new Card("T", suit[1], 10); 
+				deck.add(cards);
+			}
 		}
 		
 		else {
@@ -65,12 +70,12 @@ public class Shoe {
 		}
 	}
 	
-	public int removeFromDeck(int currcard) {
-		deck.remove(currcard);
+	/*public int removeFromDeck(int currcard) {
+		//deck.remove(currcard);
 		currcard++;
 		
 		return currcard;
-	}
+	} */
 	
 	public ArrayList<Card> getCurrDeck() {
 		return deck;
