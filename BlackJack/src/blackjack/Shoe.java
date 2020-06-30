@@ -44,7 +44,9 @@ public class Shoe {
 				deck.add(cards);
 			}
 			
-			for(int i = 0; i < shoe; i++) {
+			int remaining_cards = (shoe*52) - unit_cards.length; //num of cards - 
+			
+			for(int i = 0; i < remaining_cards; i++) {
 				cards = new Card("T", suit[1], 10); 
 				deck.add(cards);
 			}

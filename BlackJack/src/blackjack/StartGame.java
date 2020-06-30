@@ -166,7 +166,7 @@ public class StartGame {
 	}
 	
 	public int playerTurn(Hand phand, BigDecimal original) {
-		Scanner scan = new Scanner(System.in);
+		//Scanner scan = new Scanner(System.in);
 		int status = 0;
 		//String turn = null;
 		ArrayList<Card> current = phand.getHand();
@@ -198,8 +198,8 @@ public class StartGame {
 				currcard++;
 			}	
 				
-				//hand.printCurrentHand(current);
-			int sum = phand.getSum();
+			//hand.printCurrentHand(current);
+			//int sum = phand.getSum();
 				//System.out.println("Type 'U' for Suggestion Utility.");
 				//turn = scan.nextLine();
 					
