@@ -28,6 +28,7 @@ public class BlackjackTest {
 	//os.distributeCards();
 	os.run();
 	os.playerAction(Action.STAND);
+	os.startGame();
 	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 3, false, true, false, false, false, false);
@@ -39,9 +40,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 3, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.STAND);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	//os.clearHands();
@@ -51,9 +55,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 14, 10, 7, 8);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.STAND);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.ZERO, os.getBankroll());
@@ -62,9 +69,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 14, 3, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.STAND);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, true, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
@@ -73,9 +83,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 9, 9, 2);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.HIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN, os.getBankroll());
@@ -84,9 +97,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 9, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.HIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, true, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
@@ -95,9 +111,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 7, 9, 2);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.HIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.ZERO, os.getBankroll());
@@ -106,9 +125,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 14, 3, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.HIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, true, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
@@ -117,9 +139,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 9, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SURRENDER);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, true);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.valueOf(5).negate(), os.getBankroll());
@@ -128,9 +153,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 14, 6, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SURRENDER);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, true, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
@@ -139,9 +167,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 9, 9, 2);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.DOUBLE);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, true, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.valueOf(20), os.getBankroll());
@@ -150,9 +181,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 7, 5, 2, 5);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.DOUBLE);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, true, false, false, false);
 	testGameplay(os.getDealerHand(), 3, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.valueOf(-20), os.getBankroll());
@@ -161,9 +195,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 9, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.DOUBLE);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, true, true, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.valueOf(-20), os.getBankroll());
@@ -172,9 +208,12 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 7, 9, 2);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.DOUBLE);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, true, false, false, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.ZERO, os.getBankroll());
@@ -183,9 +222,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 9, 14, 2, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.DOUBLE);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, false, false);
 	testGameplay(os.getDealerHand(), 2, true, false, false, false, false, false);
 	assertEquals("Wrong Payout", BigDecimal.TEN.negate(), os.getBankroll());
@@ -194,9 +235,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 2, 10, 2, 9, 9, 10, 6, 4, 8);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SPLIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, true, false, true, false);
 	testGameplay(os.getPlayerHands().get(1), 4, false, false, false, false, true, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
@@ -206,9 +249,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 10, 9, 3, 4, 4, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SPLIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 3, false, false, false, false, true, false);
 	testGameplay(os.getPlayerHands().get(1), 3, false, true, false, false, true, false);
 	testGameplay(os.getDealerHand(), 2, false, false, false, false, false, false);
@@ -218,9 +263,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 10, 8, 10, 9, 7, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.ONE);
-	//os.run();
+	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SPLIT);
+	os.startGame();
+	
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, true, false);
 	testGameplay(os.getPlayerHands().get(1), 2, false, false, false, false, true, false);
 	testGameplay(os.getPlayerHands().get(2), 2, false, false, false, false, true, false);
