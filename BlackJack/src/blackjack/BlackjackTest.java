@@ -34,7 +34,6 @@ public class BlackjackTest {
 	testGameplay(os.getDealerHand(), 3, false, true, false, false, false, false);
 	//os.clearHands();
 	assertEquals("Wrong Payout", BigDecimal.TEN, os.getBankroll());
-	
 
 	// Forced Stand Dealer Win by higher card
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 3, 9);

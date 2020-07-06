@@ -3,7 +3,7 @@ package blackjack;
 import java.util.ArrayList;
 
 public class Hand {
-	private ArrayList <Card> player = new ArrayList<Card>();
+	private ArrayList <Card> hand = new ArrayList<Card>();
 	//private int value = 0;
 	private boolean blackjack = false;
 	private boolean split = false;
@@ -12,17 +12,17 @@ public class Hand {
 	private boolean surrender = false;
 	private boolean insurance = false;
 	
-	public Hand(ArrayList<Card> player) {
-		this.player = player;
+	public Hand(ArrayList<Card> hand) {
+		this.hand = hand;
 		//this.value = value;
 	}
 	
 	public ArrayList<Card> getHand() {
-		return player;
+		return hand;
 	}
 	
 	public void clearData() {
-		player.clear();
+		hand.clear();
 		blackjack = false;
 		split = false;
 		bust = false;
@@ -32,10 +32,11 @@ public class Hand {
 	}
 	
 	public void printCurrentHand(ArrayList <Card> player) {
-		System.out.print("You're hand: ");
 		for(int i = 0; i < player.size(); i++) {
 			System.out.print(player.get(i).toString() + ", ");
 		}
+		
+		System.out.println("\n");
 	}
 	
 	public boolean isBust() {
@@ -110,12 +111,12 @@ public class Hand {
 		int ace = 0;
 		int high = 0; //keeping track of values of 11 being used
 		
-		for(int i = 0; i < player.size(); i++) {
-			if(player.get(i).getRank().equals("A")) {
+		for(int i = 0; i < hand.size(); i++) {
+			if(hand.get(i).getRank().equals("A")) {
 				ace++;
 			}
 			else {
-				count += player.get(i).getValue(); 
+				count += hand.get(i).getValue(); 
 			}
 			//need to do Ace (1 or 11) edge case -> by default, ace is 11
 		}
@@ -149,9 +150,9 @@ public class Hand {
 	public int getSoft() {
 		int sum = 0;
 		if(hasAce() > 0 && (getSum() - 11) <= 10) {
-			for(int i = 0; i < player.size(); i++) {
-				if(!player.get(i).getRank().equals("A")) {
-					sum += player.get(i).getValue();
+			for(int i = 0; i < hand.size(); i++) {
+				if(!hand.get(i).getRank().equals("A")) {
+					sum += hand.get(i).getValue();
 				}
 			}
 		}
@@ -160,8 +161,8 @@ public class Hand {
 
 	public int hasAce() {
 		int ace = 0;
-		for(int i = 0; i < player.size(); i++) {
-			if(player.get(i).getRank().equals("A")) {
+		for(int i = 0; i < hand.size(); i++) {
+			if(hand.get(i).getRank().equals("A")) {
 					ace++;
 			}
 		}
