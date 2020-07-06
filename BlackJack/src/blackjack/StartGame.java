@@ -47,7 +47,7 @@ public class StartGame {
 			playing = true;
 			remaining = bankroll;
 			original = bet;
-			//remaining = remaining.subtract(bet);
+			remaining = remaining.subtract(bet);
 			 //must create new shoe object before line 90
 		}
 	}
@@ -104,11 +104,16 @@ public class StartGame {
 			//infinite loop for player/dealer (statusD/statusP is never 1)
 			
 			if((statusP == 1 || statusD == 1 || statusP == 2) && currcard <= shoe.getCurrDeck().size() - 4) { //still has 4+ cards to continue playing game
-				//and dealer or player busted or won 
-				//only redeal 
 				//starting another game
+				int winP = phand.getSum();
+				int winD = dhand.getSum();
 				
-				//System.out.println("hi");
+				if(winP == winD){ //"push" no one wins but player loses if both bust
+					if(winP <= 21) {
+						//gets back original bet
+						remaining = remaining.add(bet);
+					}
+				}
 				if(currcard >= shoe.getPlayable() && shuffled == false) {
 					shuffle();
 					currcard = 0;
@@ -125,7 +130,6 @@ public class StartGame {
 				int winP = phand.getSum();
 				int winD = dhand.getSum();
 				
-				//System.out.println("hi");
 				if(winP != winD) {
 					if(winP == 21 && winD != 21) {
 						if(winD > 21) {
@@ -134,8 +138,8 @@ public class StartGame {
 						phand.setBlackjack();
 						BigDecimal back = bet.multiply(BigDecimal.valueOf(1.5));
 						
-						//remaining = remaining.add(bet).add(back); //payout for blackjack
-						remaining = remaining.add(back); //payout for blackjack is 1.5*bet
+						remaining = remaining.add(bet).add(back); //payout for blackjack
+						//remaining = remaining.add(back); //payout for blackjack is 1.5*bet
 					}
 					else if (winP != 21 && winD == 21) {
 						if(winP > 21) {
@@ -173,20 +177,15 @@ public class StartGame {
 				}
 				//System.out.println("hi");
 				playing = false;
-				//break;
 			}
 			
 		}
-		//System.out.println("hi");
 		//getBankroll(); //printing out money remaining in bankroll after deck officially ends
 		//clearHands(phand, dhand, all);
 	}
 	
 	public int playerTurn(Hand phand) {
 		int status = 0;
-		//String turn = null;
-		ArrayList<Card> current = phand.getHand();
-		ArrayList<Card> dealer = dhand.getHand();
 		Action force = null;
 		int tally = playerTally(phand);
 		
@@ -209,63 +208,50 @@ public class StartGame {
 			}
 			phand.printCurrentHand(player);
 			System.out.println(force + "\n");
-			if(current.size() == 1) { //the next splitted hand
-				current.add(shoe.getCurrDeck().get(currcard));
+			if(player.size() == 1) { //the next splitted hand
+				player.add(shoe.getCurrDeck().get(currcard));
 				currcard++;
 			}
-			
 			if(force == Action.SPLIT) { 
 				if(all.maxSplit() < 5) {	
-								split(current);
-								phand.setSplit();
-								all.addSplit();
-								if(phand.hasAce() > 0) { //cant resplit A,A
-									int up = playerTally(phand);
-									if(up == 1) {
-										status = 1;
-									}
-									else if(up == 2 || up == 4) { //dealer must have turn
-										status = 2;
-									}
-									
-									else {
-										status = 0;
-									}
-									//invalid = false;
-									//hitP = false;	
-									return status;
-								}
+					split(player);
+					phand.setSplit();
+					all.addSplit();
+					if(phand.hasAce() > 0) { //cant resplit A,A
+						int up = playerTally(phand);
+						if(up == 1) {
+							status = 1;
+						}else if(up == 2 || up == 4) { //dealer must have turn
+							status = 2;
+						}else {
+							status = 0;
+						}			
+						return status;
+					}
 								//hand.printCurrentHand(current);
-								while(all.maxSplit() < 5 && (Suggestion.getAdvice(dealer.get(0).getValue(), phand, all) == Action.SPLIT)) {
+					while(all.maxSplit() < 5 && (Suggestion.getAdvice(dealer.get(0).getValue(), phand, all) == Action.SPLIT)) {
 									//show resplit hand hands
-									//System.out.println("Type 'PS' to resplit.");
-									//turn = scan.nextLine();
-									//if(turn.equalsIgnoreCase("PS")) {
-										split(current);
-										phand.setSplit();
-										all.addSplit();
-										//hand.printCurrentHand(current);
-									//}
-								}
-								int down = playerTally(phand);
-								if(down == 1) {
-									status = 1;
-								}
-								else if(down == 2 || down == 4) { //dealer must have turn
-									status = 2;
-								}
-								
-								else {
-									status = 0;
-								}
-								return status;
-						}
+						split(player);
+						phand.setSplit();
+						all.addSplit();
+					}
+					int down = playerTally(phand);
+					if(down == 1) {
+						status = 1;
+					}else if(down == 2 || down == 4) { //dealer must have turn
+						status = 2;
+					}else {
+						status = 0;
+					}
+					
+					return status;
+				}
 			}
 		
 			else if(force == Action.DOUBLE) {
-				if(current.size() == 2) {
+				if(player.size() == 2) {
 							doubleDown();
-							current.add(shoe.getCurrDeck().get(currcard));
+							player.add(shoe.getCurrDeck().get(currcard));
 							currcard++;
 							
 							phand.setDoubleDown();
@@ -279,80 +265,63 @@ public class StartGame {
 							}
 							return status;
 				}
-						
-						/*else {
-							System.out.println("You cannot double down right now.");
-						}*/
 			}
 					
 			else if(force == Action.SURRENDER) {
-						surrender(); 
-						if(all.getPlayerHands().size() == 1) {
-							phand.setSurrender();
-							status = 1; //so dont call dealer's hand -> round officially over
-						}
-						else if(all.getPlayerHands().size() > 1) {
-							status = 0;
-						}
-						all.getPlayerHands().remove(phand); 
-						//System.out.println("You Surrendered.");
-						return status;
+				surrender(); 
+				if(all.getPlayerHands().size() == 1) {
+					phand.setSurrender();
+					status = 1; //so dont call dealer's hand -> round officially over
+				}else if(all.getPlayerHands().size() > 1) {
+					status = 0;
+				}
+				all.getPlayerHands().remove(phand); 
+				return status;
 			}
 				
 			else if(force == Action.HIT) {
-				current.add(shoe.getCurrDeck().get(currcard));
+				player.add(shoe.getCurrDeck().get(currcard));
 				currcard++;
-				
+			
 				boolean hitP = true;
 				while(hitP) {
-							
-							
-							force = Suggestion.getAdvice(dealer.get(0).getValue(), phand, all); //next action
-							int up3 = playerTally(phand);
-							if(up3 == 1) { //busted
+					//phand.printCurrentHand(player);	
+					force = Suggestion.getAdvice(dealer.get(0).getValue(), phand, all); //next action
+					int up3 = playerTally(phand);
+					if(up3 == 1) { //busted
 								hitP = false;
 								status = 1;
 								return status;
 								
-							}
-							else if(up3 == 2 || up3 == 4) { //dealer must have turn
+					}else if(up3 == 2 || up3 == 4) { //dealer must have turn
 								status = 2;
 								hitP = false;
 								return status;
-							}
-							
-								//ask to hit or stay again if didnt get blackjack
-							else if(up3 == 3) { //lost a split hand so done that round
-								hitP = false;
-								return status;
-							}
-							
-							else if(force == Action.HIT) {
-								current.add(shoe.getCurrDeck().get(currcard));
-								currcard++;
-								hitP = true;
-							}
-							else {
-								if(force == Action.STAND || force != Action.HIT) {
+					}else if(up3 == 3) { //lost a split hand so done that round
+						hitP = false;
+						return status;
+					}else if(force == Action.HIT) {
+						player.add(shoe.getCurrDeck().get(currcard));
+						currcard++;
+						hitP = true;
+					}else {
+						if(force == Action.STAND || force != Action.HIT) {
 									//int tally = playerTally(phand, original);
-									if(tally == 1) { //busted
-										status = 1;
-									}
-									else if(tally == 2 || tally == 4) { //dealer must have turn
-										status = 2;
-									}
-									hitP = false;
-									return status;
-								}
-								
+							if(tally == 1) { //busted
+								status = 1;
+							}else if(tally == 2 || tally == 4) { //dealer must have turn
+								status = 2;
 							}
+							hitP = false;
+							return status;
+						}			
+					}
 				}
 			}
 				
 			else if(force == Action.STAND) {
 				if(tally == 1) { //busted
 					status = 1;
-					
 				}
 				else if(tally == 2 || tally == 4) { //dealer must have turn
 					status = 2;
@@ -487,7 +456,7 @@ public class StartGame {
 		}
 
 		original = bet;
-		//remaining = remaining.subtract(bet);
+		remaining = remaining.subtract(bet);
 		all.addData(phand);
 		deal(); //dealing first 2 cards to dealing & 2 to player from shuffled deck
 		playing = true;
