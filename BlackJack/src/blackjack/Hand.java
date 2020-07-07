@@ -30,15 +30,16 @@ public class Hand {
 		surrender = false;
 		insurance = false;
 	}
-	
-	public void printCurrentHand(ArrayList <Card> player) {
-		for(int i = 0; i < player.size(); i++) {
-			System.out.print(player.get(i).toString() + ", ");
+	 @Override
+	public String toString() {
+		 String info = "";
+		for(int i = 0; i < hand.size(); i++) {
+			info += String.format(hand.get(i).toString()); 
 		}
 		
-		System.out.println("\n");
+		return info;
 	}
-	
+
 	public boolean isBust() {
 		if(bust) {
 			return true;
