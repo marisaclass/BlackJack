@@ -26,30 +26,30 @@ public class Shoe {
 	public void createDeck() {
 		if(unit_cards != null) { 
 			for(int i = 0; i < unit_cards.length; i++) {
-				if(String.valueOf(unit_cards[i]).equals("J") || String.valueOf(unit_cards[i]).equals("Q") || 
-						String.valueOf(unit_cards[i]).equals("K")) {
-					cards = new Card(String.valueOf(unit_cards[i]), suit[1], 10);
-				}
-				else if(String.valueOf(unit_cards[i]).equals("A")) {
-					cards = new Card("A", suit[1], 11); //setting Ace value to 11
-				}
-				
-				else if(String.valueOf(unit_cards[i]).equals("10")) {
+				if(String.valueOf(unit_cards[i]).equals("10")) {
 					cards = new Card("T", suit[1], 10); 
 				}
-				
+				else if(String.valueOf(unit_cards[i]).equals("11")) {
+					cards = new Card("J", suit[1], 10); 
+				}else if(String.valueOf(unit_cards[i]).equals("12")) {
+					cards = new Card("Q", suit[1], 10); 
+				}else if(String.valueOf(unit_cards[i]).equals("13")) {
+					cards = new Card("K", suit[1], 10); 
+				}else if(String.valueOf(unit_cards[i]).equals("14")) {
+					cards = new Card("A", suit[1], 11); 
+				}
 				else {
 					cards = new Card(String.valueOf(unit_cards[i]), suit[1], unit_cards[i]); //face value, face rank
 				}
 				deck.add(cards);
 			}
 			
-			int remaining_cards = (shoe*52) - unit_cards.length; //num of cards - 
+			//int remaining_cards = (shoe*52) - unit_cards.length; //num of cards - 
 			
-			for(int i = 0; i < remaining_cards; i++) {
+			/*for(int i = 0; i < remaining_cards; i++) {
 				cards = new Card("T", suit[1], 10); 
 				deck.add(cards);
-			}
+			}*/
 		}
 		
 		else {
