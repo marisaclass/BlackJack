@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import blackjack.Action;
 
 public class Suggestion {
-	//For the suggestion Util, I'd recommend using Enum for your actions, like Action.HIT, Action.STAND, etc. 
-	//It should return an action based on the hand and the card the dealer is showing. 
-	//It'll help you get some experience with Enum's even though they aren't used often.
-	
-
 	public static Action getAdvice(int dealer, Hand hand, AllHands all){
 		Action advice = null;
 		ArrayList <Card> player = hand.getHand();
@@ -18,19 +13,16 @@ public class Suggestion {
 		int max = all.maxSplit();
 		
 		if((player.get(0).getValue() == player.get(1).getValue()) && player.size() == 2) {
-			advice = Pair(dealer, playerSum, player, max); //
+			advice = Pair(dealer, player, max); //
 		}
-		
 		else {
 			if(soft == 0) {
 				advice = hardHand(dealer, playerSum, player);
 			}
-		
 			else if(soft > 0) {
 				advice = softHand(dealer, playerSum, player);
 			}
 		}
-		//return advice.toString();
 		return advice;
 	}
 
@@ -40,7 +32,6 @@ public class Suggestion {
 			if(playerSum >= 5 && playerSum < 9) {
 				sugg = Action.HIT;
 			}
-			
 			else if(playerSum >= 9 && playerSum < 12) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -49,7 +40,6 @@ public class Suggestion {
 					sugg = Action.HIT;
 				}
 			}
-			
 			else if(playerSum == 12) {
 				sugg = Action.HIT;
 			}
@@ -79,7 +69,6 @@ public class Suggestion {
 			if(playerSum >= 5 && playerSum < 10) {
 				sugg = Action.HIT;
 			}
-			
 			else if(playerSum == 10 || playerSum == 11) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -88,7 +77,6 @@ public class Suggestion {
 					sugg = Action.HIT;
 				}
 			}
-			
 			else if(playerSum >= 12 && playerSum < 17) {
 				sugg = Action.HIT;
 			}
@@ -101,7 +89,6 @@ public class Suggestion {
 			if(playerSum >= 5 && playerSum < 11) {
 				sugg = Action.HIT;
 			}
-			
 			else if(playerSum == 11) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -110,7 +97,6 @@ public class Suggestion {
 					sugg = Action.HIT;
 				}
 			}
-			
 			else if(playerSum >= 12 && playerSum <= 16) {
 				sugg = Action.HIT;
 			}
@@ -127,7 +113,6 @@ public class Suggestion {
 			if(playerSum >= 5 && playerSum < 11) {
 				sugg = Action.HIT;
 			}
-			
 			else if(playerSum == 11) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -136,11 +121,9 @@ public class Suggestion {
 					sugg = Action.HIT;
 				}
 			}
-			
 			else if(playerSum >= 12 && playerSum < 17) {
 				sugg = Action.HIT;
 			}
-			
 			else if(playerSum >= 17 && playerSum < 22) {
 				sugg = Action.STAND;
 			}
@@ -150,7 +133,6 @@ public class Suggestion {
 	
 	public static Action softHand(int card, int playerSum, ArrayList<Card> player) {
 		Action sugg = null;
-		
 		if(card == 11) {
 			if(playerSum == 18 && player.size() > 2) {
 				sugg = Action.STAND;
@@ -167,7 +149,6 @@ public class Suggestion {
 				sugg = Action.STAND;
 			}
 		}
-		
 		else if(card == 7 || card == 8){
 			if(playerSum >= 13 && playerSum < 18) {
 				sugg = Action.HIT;
@@ -175,7 +156,6 @@ public class Suggestion {
 				sugg = Action.STAND;
 			}
 		}
-		
 		else if(card == 5 || card == 6){
 			if(playerSum >= 13 && playerSum < 18 ) {
 				if(player.size() == 2) {
@@ -195,7 +175,6 @@ public class Suggestion {
 				sugg = Action.STAND;
 			}
 		}
-		
 		else if(card == 4){
 			if(playerSum >= 13 && playerSum < 15 ) {
 				sugg = Action.HIT;
@@ -218,7 +197,6 @@ public class Suggestion {
 				sugg = Action.STAND;
 			}
 		}
-		
 		else if(card == 3){
 			if(playerSum >= 13 && playerSum < 17 ) {
 				sugg = Action.HIT;
@@ -241,7 +219,6 @@ public class Suggestion {
 				sugg = Action.STAND;
 			}
 		}
-		
 		else if(card == 2){
 			if(playerSum >= 13 && playerSum < 18 ) {
 				sugg = Action.HIT;
@@ -252,7 +229,7 @@ public class Suggestion {
 		return sugg;
 	}
 	
-	public static Action Pair(int card, int playerSum, ArrayList<Card> player, int max) {
+	public static Action Pair(int card, ArrayList<Card> player, int max) {
 		int play = player.get(0).getValue();
 		String rank = player.get(0).getRank();
 		Action sugg = null;
@@ -297,8 +274,7 @@ public class Suggestion {
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
-		}
-				
+		}	
 		else if(card == 5 || card == 6){
 			if(play == 2 || play == 3 || play == 4) {
 				if(max < 5) {
@@ -351,21 +327,15 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}
-			}else if(play == 9) {
-				sugg = Action.STAND;		
-			}else if(play == 10) {
+			}else if(play == 9 || play == 10) {
 				sugg = Action.STAND;		
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
 		}
 		else if(card == 8){
-			if(play == 2) {
+			if(play == 2 || play == 3 || play == 4) {
 				sugg = Action.HIT;
-			}else if(play == 3) {
-				sugg = Action.HIT;		
-			}else if(play == 4) {
-				sugg = Action.HIT;		
 			}else if(play == 5) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -394,15 +364,10 @@ public class Suggestion {
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		
 			}		
-		}
-				
+		}	
 		else if(card == 9){
-			if(play == 2) {
+			if(play == 2 || play == 3 || play == 4) {
 				sugg = Action.HIT;
-			}else if(play == 3) {
-				sugg = Action.HIT;
-			}else if(play == 4) {
-				sugg = Action.HIT;		
 			}else if(play == 5) {
 				if(player.size() == 2) {
 					sugg = Action.DOUBLE;
@@ -452,9 +417,7 @@ public class Suggestion {
 				else {
 					sugg = Action.HIT;
 				}		
-			}else if(play == 9) {
-				sugg = Action.STAND;		
-			}else if(play == 10) {
+			}else if(play == 9 || play == 10) {
 				sugg = Action.STAND;		
 			}else if(rank.equalsIgnoreCase("A") && max < 5) {
 				sugg = Action.SPLIT;		

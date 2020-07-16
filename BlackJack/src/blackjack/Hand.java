@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Hand {
 	private ArrayList <Card> hand = new ArrayList<Card>();
-	//private int value = 0;
 	private boolean blackjack = false;
 	private boolean split = false;
 	private boolean bust = false;
@@ -14,7 +13,6 @@ public class Hand {
 	
 	public Hand(ArrayList<Card> hand) {
 		this.hand = hand;
-		//this.value = value;
 	}
 	
 	public ArrayList<Card> getHand() {
@@ -36,7 +34,6 @@ public class Hand {
 		for(int i = 0; i < hand.size(); i++) {
 			info += String.format(hand.get(i).toString()); 
 		}
-		
 		return info;
 	}
 
@@ -81,7 +78,6 @@ public class Hand {
 		}
 		return false;
 	}
-	
 	
 	public void setBust() {
 		bust = true;
@@ -138,13 +134,11 @@ public class Hand {
 				}
 			}
 		}
-		
 		while(count > 21 && high > 0) { //checking at end 	
 			count -= 11;
 			count++; 
 			high--;
 		}
-
 		return count; //returns sum but doesnt notify if a soft hand or not
 	}
 	

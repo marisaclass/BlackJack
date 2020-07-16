@@ -279,12 +279,11 @@ public class BlackjackTest {
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 10, 8, 10, 9, 7, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.TEN);
-	
 	os.run();
 	//os.distributeCards();
 	os.playerAction(Action.SPLIT);
 	os.startGame();
-	
+
 	testGameplay(os.getPlayerHands().get(0), 2, false, false, false, false, true, false);
 	testGameplay(os.getPlayerHands().get(1), 2, false, false, false, false, true, false);
 	testGameplay(os.getPlayerHands().get(2), 2, false, false, false, false, true, false);

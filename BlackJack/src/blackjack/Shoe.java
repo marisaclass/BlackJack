@@ -51,7 +51,6 @@ public class Shoe {
 				deck.add(cards);
 			}*/
 		}
-		
 		else {
 			for(int i = 0; i < shoe; i++){
 				for(int n = 0; n < suit.length; n++) { //for loop to set suits
@@ -71,13 +70,6 @@ public class Shoe {
 			}
 		}
 	}
-	
-	/*public int removeFromDeck(int currcard) {
-		//deck.remove(currcard);
-		currcard++;
-		
-		return currcard;
-	} */
 	
 	public ArrayList<Card> getCurrDeck() {
 		return deck;

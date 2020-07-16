@@ -1,12 +1,12 @@
 package blackjack;
 
 public enum Action {
-
 	HIT {
 		@Override public String toString(){ 
 			return "Hit"; 
 		} 
 	}, 
+	
 	STAND { 
 		@Override public String toString(){ 
 			return "Stand"; 
