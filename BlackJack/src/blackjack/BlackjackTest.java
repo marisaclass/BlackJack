@@ -20,12 +20,11 @@ public class BlackjackTest {
 	// os.setStartingBet(BET);
 
 	// Forced Stand Player Win by dealer bust
-	
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 3, 4, 10);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.TEN);
-	
 	//os.distributeCards();
+	
 	os.run();
 	os.playerAction(Action.STAND);
 	os.startGame();
@@ -36,7 +35,6 @@ public class BlackjackTest {
 	assertEquals("Wrong Payout", BigDecimal.TEN, os.getBankroll());
 
 	// Forced Stand Dealer Win by higher card
-	//os.clearHands();
 	os.setShoe(DECKS, PLAYABLE, 10, 10, 3, 9);
 	os.setBankroll(BigDecimal.ZERO);
 	os.makeBet(BigDecimal.TEN);
