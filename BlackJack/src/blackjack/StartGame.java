@@ -124,8 +124,6 @@ public class StartGame {
 					Hand current = all.getPlayerHands().get(i);
 					ArrayList<Card> p = current.getHand();
 
-					System.out.println(all.getPlayerHands().get(i));
-					System.out.println(remaining);
 					if(winP == 21 && winD != 21 && count == false) {
 						if(p.size() == 2) {
 							current.setBlackjack();
