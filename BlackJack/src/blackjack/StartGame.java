@@ -113,7 +113,7 @@ public class StartGame {
 					 break;
 				}
 			}	
-			else if(currcard > shoe.getCurrDeck().size() - 1 || statusP == 2) { //end of deck so tally and terminate game
+			else if(currcard > shoe.getCurrDeck().size() - 1) { //end of deck so tally and terminate game
 				int winP = 0;
 				int winD = dhand.getSum();
 				boolean accounted = false;
